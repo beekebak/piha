@@ -9,7 +9,7 @@ function writeInstancesOfEntity($pdo, $query, $name){
     echo "<table border='1'>";
     while ($row = $res->fetch()) {
         $id = $name.'_id';
-        echo "<tr><td><a href=\"../entities/$name.php?$id=${row[$name.'_id']}\">${row[$name.'_name']}</a></td></tr>";
+        echo "<tr><td><a href=\"../instances/$name.php?$id=${row[$name.'_id']}\">${row[$name.'_name']}</a></td></tr>";
     }
     echo "</table>";
 }
@@ -30,13 +30,12 @@ function writeFacultiesOrStudents($pdo, $query, $main_name, $id_val, $writeable_
     $main_id = $main_name.'_id';
     $writeable_id = $writeable_name.'_id';
     $writeable_fullname = $writeable_name.'_name';
-    $path = "\"../forms/delete".mb_convert_case("$writeable_name", MB_CASE_TITLE)."Handler.php\"";
     $stmt = $pdo -> prepare($query);
     $stmt -> execute();
     echo '<ul>';
     while ($row = $stmt->fetch()) {
         echo "<li><a href=\"$writeable_name.php?$writeable_id=${row[$writeable_id]}\">${row[$writeable_fullname]}</a>
-           <form action=$path method=\"post\">
+           <form action=\"../forms/deleteElectiveHandler.php\" method=\"post\">
                 <input hidden name=$writeable_id value=${row[$writeable_id]}>
                 <input hidden name=$main_id value=$id_val>
                 <input hidden name=source value=$main_name>
@@ -82,7 +81,7 @@ function getIdInput($name, $val){
 
 function redirectToMaker($data){
     $src = $data['source'].'_id';
-    header("Location: ../entities/$data[source].php?$src=$data[$src]");
+    header("Location: ../instances/$data[source].php?$src=$data[$src]");
 }
 
 function handleTrivialRequest($data, $query, $query_args_names){

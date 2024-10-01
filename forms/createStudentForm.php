@@ -10,4 +10,4 @@
         writeSelect($PDO, "SELECT group_name, group_id FROM student_groups", "group", "group_id");
         echo("<input type=\"submit\"></form>");
 ?>
-<a href="../collections/students.php">К списку студентов</a>
+<a href="../entities/students.php">К списку студентов</a>

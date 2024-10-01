@@ -5,4 +5,4 @@
         getRequiredInput("faculty", "факультет"));
     echo("<input type=\"submit\"><form>");
 ?>
-<a href="../collections/groups.php">К списку групп</a>
+<a href="../entities/groups.php">К списку групп</a>

@@ -8,7 +8,7 @@
                   students(student_name, birth_place, birth_date, phone_number, average_grade, group_id)
                   VALUES(:student_name, :birth_place, :birth_date, :phone_number, :average_grade, :group_id);",
             ["student_name", "birth_place", "birth_date", "phone_number", "average_grade", "group_id"]);
-        header('Location: ../collections/students.php');
+        header('Location: ../entities/students.php');
     }
 ?>
 

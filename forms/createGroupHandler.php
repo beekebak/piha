@@ -8,6 +8,6 @@ if(!empty($data)) {
                   student_groups(group_name, faculty)
                   VALUES(:group_name, :faculty);",
         ["group_name", "faculty"]);
-    header('Location: ../collections/groups.php');
+    header('Location: ../entities/groups.php');
 }
 ?>

@@ -8,6 +8,6 @@ if(!empty($data)) {
                   electives(elective_name)
                   VALUES(:elective_name);",
         ["elective_name"]);
-    header('Location: ../collections/electives.php');
+    header('Location: ../entities/electives.php');
 }
 ?>

@@ -4,4 +4,4 @@ echo(getForm("../forms/createElectiveHandler.php").
     getRequiredInput("elective_name", "название факультатива"));
 echo("<input type=\"submit\"><form>");
 ?>
-<a href="../collections/electives.php">К списку факультативов</a>
+<a href="../entities/electives.php">К списку факультативов</a>
