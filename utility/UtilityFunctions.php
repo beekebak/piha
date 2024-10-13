@@ -3,17 +3,6 @@ function getPdo(){
     return new PDO("mysql:host=localhost;dbname=g3kovalev;charset=utf8", 'root', 'root');
 }
 
-function writeInstancesOfEntity($pdo, $query, $name){
-    $res = $pdo->prepare($query);
-    $res->execute();
-    echo "<table border='1'>";
-    while ($row = $res->fetch()) {
-        $id = $name.'_id';
-        echo "<tr><td><a href=\"../instances/$name.php?$id=${row[$name.'_id']}\">${row[$name.'_name']}</a></td></tr>";
-    }
-    echo "</table>";
-}
-
 function writeSelect($pdo, $query, $name, $param_name){
     $id = $name.'_id';
     $big_name = $name.'_name';
@@ -35,7 +24,7 @@ function writeFacultiesOrStudents($pdo, $query, $main_name, $id_val, $writeable_
     echo '<ul>';
     while ($row = $stmt->fetch()) {
         echo "<li><a href=\"$writeable_name.php?$writeable_id=${row[$writeable_id]}\">${row[$writeable_fullname]}</a>
-           <form action=\"../forms/deleteElectiveHandler.php\" method=\"post\">
+           <form action=\"../handlers/deleteElectiveHandler.php\" method=\"post\">
                 <input hidden name=$writeable_id value=${row[$writeable_id]}>
                 <input hidden name=$main_id value=$id_val>
                 <input hidden name=source value=$main_name>
@@ -49,7 +38,7 @@ function addFacultiesOrStudents($pdo, $query, $main_name, $id_val, $writeable_na
     $main_id = $main_name.'_id';
     $writeable_id = $writeable_name.'_id';
     $writeable_fullname = $writeable_name.'_name';
-    echo("<form action=\"../forms/addElectiveHandler.php\" method=\"post\">
+    echo("<form action=\"../handlers/addElectiveHandler.php\" method=\"post\">
       <select required name=$writeable_id>");
     $electives = $pdo->query($query);
     while ($row = $electives->fetch()) {

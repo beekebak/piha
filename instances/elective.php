@@ -4,9 +4,14 @@
     $electiveID = $_GET['elective_id'];
 
     $pdo = getPdo();
-    $Q = "SELECT elective_name FROM electives WHERE elective_id = $electiveID";
+    $Q = "SELECT elective_name, professor_id, professor_name FROM electives LEFT JOIN professors using(professor_id) WHERE elective_id = $electiveID";
     $name = $pdo->query($Q)->fetch(PDO::FETCH_ASSOC);
-    echo "<tr><td>${name['elective_name']}</td></tr>";
+    echo "<tr><td>${name['elective_name']}</td></tr><br>";
+    if(!is_null($name['professor_name'])){
+        echo "<tr><td><a href=\"professor.php?professor_id=${name['professor_id']}\">Профессор: ${name['professor_name']}<br></tr></td>";
+    } else {
+        echo "<tr><td>Преподаватель: ${name['professor_name']}<br></tr></td>";
+    }
 
     $Q = "SELECT student_name, student_id, elective_id
           FROM electives
@@ -22,5 +27,5 @@ addFacultiesOrStudents($pdo, $Q, 'elective', $electiveID, 'student');
 
 writeUpdateElectiveForm($electiveID);
 ?>
-<a href="../entities/electives.php">К списку факультативов</a>
+<a href="../entities/electives.html">К списку факультативов</a>
 <a href="../index.php">На главную</a>

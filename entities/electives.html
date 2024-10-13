@@ -1,0 +1,95 @@
+<html lang="rus">
+<head>
+    <meta charset="utf-8">
+    <title>electives</title>
+    <style>
+        table {
+            width: 20%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        let electives = [];
+
+        function filterElectives() {
+            const nameFilter = document.getElementById('name-filter').value.toLowerCase();
+
+            const filteredElectives = electives.filter(elective => {
+                return elective.elective_name.toLowerCase().startsWith(nameFilter);
+            });
+
+            displayElectives(filteredElectives);
+        }
+
+        async function fetchElectives() {
+            try {
+                const response = await fetch('electives.php');
+                electives = await response.json();
+                displayElectives(electives);
+            } catch (error) {
+                console.error('Ошибка при получении факультативов:', error);
+            }
+        }
+
+        function displayElectives(electives) {
+            const electiveTableBody = document.getElementById('elective-table-body');
+            electiveTableBody.innerHTML = '';
+            electives.forEach(elective => {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                const a = document.createElement('a');
+
+                a.href = `../instances/elective.php?elective_id=${elective.elective_id}`;
+                a.textContent = elective.elective_name;
+
+                td.appendChild(a);
+                tr.appendChild(td);
+                electiveTableBody.appendChild(tr);
+            });
+        }
+
+        function sortElectives() {
+            const sortBy = document.getElementById('sort-select').value;
+            const sortedElectives = [...electives];
+            if (sortBy === 'elective_name') {
+                sortedElectives.sort((a, b) => a.elective_name.localeCompare(b.elective_name));
+            } else if (sortBy === 'id'){
+                sortedElectives.sort((a, b) => a.elective_id - b.elective_id);
+            }
+
+            displayElectives(sortedElectives);
+        }
+        window.onload = fetchElectives;
+    </script>
+
+</head>
+<body>
+<p>Все факультативы</p>
+
+<label for="sort-select">Сортировать по:</label>
+<select id="sort-select" onchange="sortElectives()">
+    <option value="id">ID</option>
+    <option value="elective_name">Название</option>
+</select>
+
+<div>
+    <label for="name-filter">Название начинается с:</label>
+    <input type="text" id="name-filter" oninput="filterElectives()">
+</div>
+
+<table>
+    <tbody id="elective-table-body">
+    </tbody>
+</table>
+<a href="../forms/createElectiveForm.php">Добавить факультатив</a>
+<a href="../index.php">На главную</a>
+</body>
+</html>

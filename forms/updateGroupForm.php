@@ -3,7 +3,7 @@ require_once '../utility/UtilityFunctions.php';
 
 function writeUpdateGroupForm($val){
     echo("изменить данные группы" .
-        getForm("../forms/updateGroupHandler.php") .
+        getForm("../handlers/updateGroupHandler.php") .
         getIdInput("group", $val) .
         getInput("group_name", "название") .
         getInput("faculty", "факультет"));

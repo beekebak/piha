@@ -3,7 +3,7 @@ require_once '../utility/UtilityFunctions.php';
 
 function writeUpdateStudentForm($val){
     echo("изменить данные студента" .
-        getForm("../forms/updateStudentHandler.php") .
+        getForm("../handlers/updateStudentHandler.php") .
         getIdInput("student", $val) .
         getInput("student_name", "имя") .
         getInput("birth_place", "место рождения") .

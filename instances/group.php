@@ -15,7 +15,11 @@ function writeGroupData($pdo, $groupID){
     foreach ($values as $key => $value) {
         echo "<tr><td>$key: ${row[$value]}</tr></td>";
     }
-    echo "<tr><td><a href=\"student.php?student_id=${row['leader_id']}\">id старосты: ${row['leader_id']}</a> <br></tr></td>";
+    if(!is_null($row['leader_id'])) {
+        echo "<tr><td><a href=\"student.php?student_id=${row['leader_id']}\">id старосты: ${row['leader_id']}</a> <br></tr></td>";
+    } else {
+        echo "<tr><td>id старосты: ${row['leader_id']}<br></tr></td>";
+    }
     echo '</table>';
 }
 
@@ -42,5 +46,5 @@ writeStudents($pdo, $groupID);
 
 writeUpdateGroupForm($groupID);
 ?>
-<a href="../entities/groups.php">К списку групп</a>
+<a href="../entities/groups.html">К списку групп</a>
 <a href="../index.php">На главную</a>

@@ -1,0 +1,125 @@
+<html lang="rus">
+<head>
+    <meta charset="utf-8">
+    <title>students</title>
+    <style>
+        table {
+            width: 20%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        let students = [];
+
+        function filterStudents() {
+            const nameFilter = document.getElementById('name-filter').value.toLowerCase();
+            const averageScoreFilter = parseFloat(document.getElementById('average-score-filter').value) || 0;
+            const birthdateFrom = new Date(document.getElementById('birthdate-from').value);
+            const birthdateTo = new Date(document.getElementById('birthdate-to').value);
+
+            const filteredStudents = students.filter(student => {
+                const nameMatch = student.student_name.toLowerCase().startsWith(nameFilter);
+                const averageScoreMatch = student.average_grade >= averageScoreFilter;
+                const birthdateMatch = (!isNaN(birthdateFrom) ? new Date(student.birth_date) >= birthdateFrom : true) &&
+                    (!isNaN(birthdateTo) ? new Date(student.birth_date) <= birthdateTo : true);
+
+                return nameMatch && averageScoreMatch && birthdateMatch;
+            });
+
+            displayStudents(filteredStudents); // Отображаем отфильтрованные студенты
+        }
+
+        async function fetchStudents() {
+            try {
+                const response = await fetch('students.php');
+                students = await response.json();
+                displayStudents(students);
+            } catch (error) {
+                console.error('Ошибка при получении студентов:', error);
+            }
+        }
+
+        function displayStudents(students) {
+            const studentTableBody = document.getElementById('student-table-body');
+            studentTableBody.innerHTML = '';
+
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                const a = document.createElement('a');
+
+                a.href = `../instances/student.php?student_id=${student.student_id}`;
+                a.textContent = student.student_name;
+
+                td.appendChild(a);
+                tr.appendChild(td);
+                studentTableBody.appendChild(tr);
+            });
+        }
+
+        function sortStudents() {
+            const sortBy = document.getElementById('sort-select').value;
+            const sortedStudents = [...students];
+            if (sortBy === 'student_name') {
+                sortedStudents.sort((a, b) => a.student_name.localeCompare(b.student_name));
+            } else if (sortBy === 'birth_date') {
+                sortedStudents.sort((a, b) => new Date(a.birth_date) - new Date(b.birth_date));
+            } else if (sortBy === 'average_grade') {
+                sortedStudents.sort((a, b) => a.average_grade - b.average_grade);
+            } else if (sortBy === 'id'){
+                sortedStudents.sort((a, b) => a.student_id - b.student_id);
+            }
+
+            displayStudents(sortedStudents);
+        }
+        window.onload = fetchStudents;
+    </script>
+
+</head>
+<body>
+<p>Все студенты</p>
+
+<label for="sort-select">Сортировать по:</label>
+<select id="sort-select" onchange="sortStudents()">
+    <option value="id">ID</option>
+    <option value="student_name">Имя</option>
+    <option value="birth_date">Дата рождения</option>
+    <option value="average_grade">Средний балл</option>
+</select>
+
+<div>
+    <label for="name-filter">Имя начинается с:</label>
+    <input type="text" id="name-filter" oninput="filterStudents()">
+</div>
+
+<div>
+    <label for="average-score-filter">Средний балл не ниже:</label>
+    <input type="number" id="average-score-filter" oninput="filterStudents()">
+</div>
+
+<div>
+    <label for="birthdate-from">Дата рождения с:</label>
+    <input type="date" id="birthdate-from" oninput="filterStudents()">
+</div>
+
+<div>
+    <label for="birthdate-to">Дата рождения по:</label>
+    <input type="date" id="birthdate-to" oninput="filterStudents()">
+</div>
+
+<table>
+    <tbody id="student-table-body">
+    </tbody>
+</table>
+<a href="../forms/createStudentForm.php">Добавить студента</a>
+<a href="../index.php">На главную</a>
+</body>
+</html>

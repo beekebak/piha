@@ -6,7 +6,7 @@ $studentID = $_GET['student_id'];
 function writeStudentData($pdo, $studentID){
     $Q = "SELECT student_id, student_name, birth_date, birth_place, phone_number, average_grade, group_id, group_name
       FROM students
-      JOIN student_groups using(group_id)
+      LEFT JOIN student_groups using(group_id)
       WHERE student_id='$studentID';";
     $values = ['id' => 'student_id', 'Имя' => 'student_name', 'Дата рождения' => 'birth_date', 'Место рождения' => 'birth_place',
         'Номер телефона' => 'phone_number', 'Средний балл' => 'average_grade'];
@@ -17,7 +17,11 @@ function writeStudentData($pdo, $studentID){
     foreach ($values as $key => $value) {
         echo "<tr><td>$key: ${row[$value]}</tr></td>";
     }
-    echo "<tr><td><a href=\"group.php?group_id=${row['group_id']}\">Группа: ${row['group_name']}<br></tr></td>";
+    if(!is_null($row['group_name'])){
+        echo "<tr><td><a href=\"group.php?group_id=${row['group_id']}\">Группа: ${row['group_name']}<br></tr></td>";
+    } else {
+        echo "<tr><td>Группа: ${row['group_name']}<br></tr></td>";
+    }
     echo '</table>';
 }
 echo "<p>Листок студента</p><br>";
@@ -39,5 +43,5 @@ addFacultiesOrStudents($pdo, $Q, 'student', $studentID, 'elective');
 
 writeUpdateStudentForm($studentID);
 ?>
-<a href="../entities/students.php">К списку студентов</a>
+<a href="../entities/students.html">К списку студентов</a>
 <a href="../index.php">На главную</a>

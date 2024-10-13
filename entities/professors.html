@@ -1,0 +1,98 @@
+<html lang="rus">
+<head>
+    <meta charset="utf-8">
+    <title>professors</title>
+    <style>
+        table {
+            width: 20%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        let professors = [];
+
+        function filterProfessors() {
+            const nameFilter = document.getElementById('name-filter').value.toLowerCase();
+
+            const filteredProfessors = professors.filter(professor => {
+                return professor.professor_name.toLowerCase().startsWith(nameFilter);
+            });
+
+            displayProfessors(filteredProfessors);
+        }
+
+        async function fetchProfessors() {
+            try {
+                const response = await fetch('professors.php');
+                professors = await response.json();
+                displayProfessors(professors);
+            } catch (error) {
+                console.error('Ошибка при получении преподавателей:', error);
+            }
+        }
+
+        function displayProfessors(professors) {
+            const professorTableBody = document.getElementById('professor-table-body');
+            professorTableBody.innerHTML = '';
+            professors.forEach(professor => {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                const a = document.createElement('a');
+
+                a.href = `../instances/professor.php?professor_id=${professor.professor_id}`;
+                a.textContent = professor.professor_name;
+
+                td.appendChild(a);
+                tr.appendChild(td);
+                professorTableBody.appendChild(tr);
+            });
+        }
+
+        function sortProfessors() {
+            const sortBy = document.getElementById('sort-select').value;
+            const sortedProfessors = [...professors];
+            if (sortBy === 'professor_name') {
+                sortedProfessors.sort((a, b) => a.professor_name.localeCompare(b.professor_name));
+            } else if (sortBy === 'id'){
+                sortedProfessors.sort((a, b) => a.professor_id - b.professor_id);
+            } else if (sortBy === 'electives_count') {
+                sortedProfessors.sort((a, b) => b.electives_count - a.electives_count);
+            }
+
+            displayProfessors(sortedProfessors);
+        }
+        window.onload = fetchProfessors;
+    </script>
+
+</head>
+<body>
+<p>Все факультативы</p>
+
+<label for="sort-select">Сортировать по:</label>
+<select id="sort-select" onchange="sortProfessors()">
+    <option value="id">ID</option>
+    <option value="professor_name">Имя</option>
+    <option value="electives_count">Количество проводимых факультативов</option>
+</select>
+
+<div>
+    <label for="name-filter">Имя начинается с:</label>
+    <input type="text" id="name-filter" oninput="filterProfessors()">
+</div>
+
+<table>
+    <tbody id="professor-table-body">
+    </tbody>
+</table>
+<a href="../forms/createProfessorForm.php">Добавить преподавателя</a>
+<a href="../index.php">На главную</a>
+</body>
+</html>

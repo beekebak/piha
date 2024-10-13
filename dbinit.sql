@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS g3kovalev;
+
 DROP DATABASE g3kovalev;
 
 CREATE DATABASE IF NOT EXISTS g3kovalev;
@@ -6,7 +8,8 @@ USE g3kovalev;
 
 CREATE TABLE IF NOT EXISTS electives(
 	elective_id INT AUTO_INCREMENT PRIMARY KEY,
-	elective_name VARCHAR(40) NOT NULL
+	elective_name VARCHAR(40) NOT NULL,
+	professor_id INT
 );
 
 CREATE TABLE IF NOT EXISTS student_groups(
@@ -35,15 +38,29 @@ CREATE TABLE IF NOT EXISTS elective_records(
 	FOREIGN KEY(student_id) REFERENCES students(student_id)
 );
 
+CREATE TABLE IF NOT EXISTS professors(
+	professor_id INT AUTO_INCREMENT PRIMARY KEY,
+	professor_name VARCHAR(80) NOT NULL
+);
+
 ALTER TABLE student_groups
 ADD CONSTRAINT leader_id_fk
 FOREIGN KEY(leader_id) REFERENCES students(student_id);
 
-INSERT INTO electives(elective_name)
-VALUES("Компьютерная графика"),
-		 ("Современные компиляторы"),
-		 ("Нейронные сети"),
-		 ("Основы DevOps");
+ALTER TABLE electives
+ADD CONSTRAINT professor_id_fk
+FOREIGN KEY(professor_id) REFERENCES professors(professor_id);
+
+INSERT INTO professors(professor_name)
+VALUES("Александр Александров"),
+		("Елена Волкова"),
+		("Антон Широкий");
+
+INSERT INTO electives(elective_name, professor_id)
+VALUES("Компьютерная графика", 1),
+		 ("Современные компиляторы", 2),
+		 ("Нейронные сети", 3),
+		 ("Основы DevOps", 3);
 INSERT INTO student_groups(group_name, faculty, leader_id)
 VALUES("МУГ-1", "Фалькутет математики", NULL),
 		 ("ИУГ-1", "Фалькутет информатики", NULL),

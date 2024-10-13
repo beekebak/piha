@@ -1,0 +1,106 @@
+<html lang="rus">
+<head>
+    <meta charset="utf-8">
+    <title>groups</title>
+    <style>
+        table {
+            width: 20%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        let groups = [];
+
+        function filterGroups() {
+            const nameFilter = document.getElementById('name-filter').value.toLowerCase();
+            const facultyFilter = document.getElementById('faculty-filter').value.toLowerCase();
+
+            const filteredGroups = groups.filter(group => {
+                const groupsFiltered = group.group_name.toLowerCase().startsWith(nameFilter);
+                const facultyFiltered = group.faculty.toLowerCase().startsWith(facultyFilter);
+                return groupsFiltered & facultyFiltered;
+            });
+
+            displayGroups(filteredGroups);
+        }
+
+        async function fetchGroups() {
+            try {
+                const response = await fetch('groups.php');
+                groups = await response.json();
+                displayGroups(groups);
+            } catch (error) {
+                console.error('Ошибка при получении групп:', error);
+            }
+        }
+
+        function displayGroups(groups) {
+            const groupTableBody = document.getElementById('group-table-body');
+            groupTableBody.innerHTML = '';
+            groups.forEach(group => {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                const a = document.createElement('a');
+
+                a.href = `../instances/group.php?group_id=${group.group_id}`;
+                a.textContent = group.group_name;
+
+                td.appendChild(a);
+                tr.appendChild(td);
+                groupTableBody.appendChild(tr);
+            });
+        }
+
+        function sortGroups() {
+            const sortBy = document.getElementById('sort-select').value;
+            const sortedGroups = [...groups];
+            if (sortBy === 'group_name') {
+                sortedGroups.sort((a, b) => a.group_name.localeCompare(b.group_name));
+            } else if (sortBy === 'id'){
+                sortedGroups.sort((a, b) => a.group_id - b.group_id);
+            } else if (sortBy === 'faculty'){
+                sortedGroups.sort((a, b) => a.faculty.localeCompare(b.faculty));
+            }
+
+            displayGroups(sortedGroups);
+        }
+        window.onload = fetchGroups;
+    </script>
+
+</head>
+<body>
+<p>Все факультативы</p>
+
+<label for="sort-select">Сортировать по:</label>
+<select id="sort-select" onchange="sortGroups()">
+    <option value="id">ID</option>
+    <option value="group_name">Название</option>
+    <option value="faculty">Факультет</option>
+</select>
+
+<div>
+    <label for="name-filter">Название начинается с:</label>
+    <input type="text" id="name-filter" oninput="filterGroups()">
+</div>
+
+<div>
+    <label for="faculty-filter">Название факультета начинается с:</label>
+    <input type="text" id="faculty-filter" oninput="filterGroups()">
+</div>
+
+<table>
+    <tbody id="group-table-body">
+    </tbody>
+</table>
+<a href="../forms/createGroupForm.php">Добавить группу</a>
+<a href="../index.php">На главную</a>
+</body>
+</html>
